@@ -74,8 +74,8 @@ module.exports = {
     // 配置 webpack-dev-server 行为。
     devServer: {
       open: process.platform === 'darwin',
-      host: '127.0.0.1',
-      port: 8081,
+      host: 'localhost',
+      port: 8080,
       https: false,
       hotOnly: false,
       // 查阅 https://github.com/vuejs/vue-doc-zh-cn/vue-cli/cli-service.md#配置代理
