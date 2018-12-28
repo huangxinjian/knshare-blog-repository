@@ -1,13 +1,47 @@
 <template>
-    <input v-bind:type="type" v-bind:placeholder="msg" v-bind:class="verifyClass" v-model="value" v-on:focus="focus"  >
+<!--  v-bind:type="type"  接收input框类型
+      v-bind:name="name"  接收input框名称
+      v-bind:placeholder="msg" 接收input框提示语
+      v-bind:class="verifyClass" 接收该input框是否为验证码框
+       v-model.trim="value"   双向绑定Value值,并过滤掉前后空白
+      v-on:focus="focus"  监听input框的获取焦点（focus）事件
+      v-on:blur="blur" 监听input框的失去校验（blur）事件 -->
+    <input  v-bind:type="type" 
+            v-bind:name="name"  
+            v-bind:placeholder="msg" 
+            v-bind:class="[verifyClass,usernameErrorClass,passwordErrorClass,verifyCodeErrorClass,phoneNumberErrorClass,phoneCodeErrorClass]" 
+            v-model.trim="value" 
+            v-on:focus="focus"  
+            v-on:blur="blur">
 </template>
 
 <script>
 export default {
     props:{
+        'name':String,
         'msg':String,
         'type':String,
+        'usernameErrorClass':{
+            type:String,
+            default:''
+        },
+        'passwordErrorClass':{
+            type:String,
+            default:''
+        },
+        'verifyCodeErrorClass':{
+            type:String,
+            default:''
+        },
         'verifyClass':{
+            type:String,
+            default:''
+        },
+        'phoneNumberErrorClass':{
+             type:String,
+            default:''
+        },
+        'phoneCodeErrorClass':{
             type:String,
             default:''
         }
@@ -19,16 +53,33 @@ export default {
     },methods: {
         focus(){
             if(this.type=="password"){
-                console.log('ok拉');
-                this.$emit('showVerify');
+                // 显示验证码
+                this.$emit('showVerify');  
             }
+        },
+        blur(){  //校验输入的内容是否正确 
+        
+            this.$emit('returnValue',this.value,this.name);  
+
         }
-      
     },
 }
 </script>
 
 <style scoped>
+
+/*当用户输入错误的时候，显示红色的placeholder*/
+    input.invalid:-ms-input-placeholder{
+         color: red;
+         font-size: 20px;
+         font-family: 黑体;
+    }
+
+    input.invalid::-webkit-input-placeholder {
+         color: red;
+         font-size: 20px;
+         font-family: 黑体;
+    }
     input::-webkit-input-placeholder {
         /* placeholder颜色  */
          color: #aab2bd;
@@ -58,7 +109,7 @@ export default {
      }
 
      .verify{
-         padding-left: 5px;
+            padding-left: 5px;
             padding-bottom: 13px;
             background: transparent;
             border: none;
@@ -69,6 +120,8 @@ export default {
             font-size: 20px;
             color: #1A1A1A;
      }
+
+  
      
    
 
