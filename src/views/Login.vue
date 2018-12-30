@@ -39,7 +39,7 @@
                 <div class="btn btn-lg loginClickDiv" key="login" v-on:click="sendLoginRequest" v-bind:disabled="submit">登录</div>
   
                 <div class="loginFooter">
-                    <label>还没有账号？</label><span>注册</span>
+                    <label>还没有账号？</label><router-link to="regist" tag="span">注册</router-link>
                 </div>
             </div>
         </div>
@@ -164,7 +164,7 @@ export default {
                     this.verifyCodeError = 'invalid';
                     this.verifyStatus = false;
                 }else{
-                     console.log('password'+value);
+                    console.log('password'+value);
                     this.verifyCodePlaceholder = '请输入验证码';
                     this.verifyCodeError = '';
                     this.verifycode = value;

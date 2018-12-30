@@ -3,13 +3,21 @@
       v-bind:name="name"  接收input框名称
       v-bind:placeholder="msg" 接收input框提示语
       v-bind:class="verifyClass" 接收该input框是否为验证码框
-       v-model.trim="value"   双向绑定Value值,并过滤掉前后空白
+      v-model.trim="value"   双向绑定Value值,并过滤掉前后空白
       v-on:focus="focus"  监听input框的获取焦点（focus）事件
       v-on:blur="blur" 监听input框的失去校验（blur）事件 -->
     <input  v-bind:type="type" 
             v-bind:name="name"  
             v-bind:placeholder="msg" 
-            v-bind:class="[verifyClass,usernameErrorClass,passwordErrorClass,verifyCodeErrorClass,phoneNumberErrorClass,phoneCodeErrorClass]" 
+            v-bind:class="[ verifyClass,
+                            usernameErrorClass,
+                            passwordErrorClass,
+                            registerPwdErrorClass,
+                            registerPwdAgainErrorClass,
+                            registerUsernameErrorClass,
+                            verifyCodeErrorClass,
+                            phoneNumberErrorClass,
+                            phoneCodeErrorClass]" 
             v-model.trim="value" 
             v-on:focus="focus"  
             v-on:blur="blur">
@@ -44,6 +52,18 @@ export default {
         'phoneCodeErrorClass':{
             type:String,
             default:''
+        },
+        'registerUsernameErrorClass':{
+            type:String,
+            default:''
+        },
+        'registerPwdErrorClass':{
+             type:String,
+            default:''
+        },
+        'registerPwdAgainErrorClass':{
+             type:String,
+            default:''
         }
     },
     data:function(){
@@ -52,7 +72,7 @@ export default {
         }
     },methods: {
         focus(){
-            if(this.type=="password"){
+            if(this.name=="password"){
                 // 显示验证码
                 this.$emit('showVerify');  
             }
