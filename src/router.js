@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
+import Regist from './views/Regist.vue'
 
 Vue.use(Router)
 
@@ -17,6 +18,10 @@ export default new Router({
       path: '/login',   //首页进入登陆页面
       name: 'Login',
       component: Login
+    },{
+      path: '/regist',   //注册页面
+      name: 'Regist',
+      component: Regist
     }
     // {
     //   path: '/about',
