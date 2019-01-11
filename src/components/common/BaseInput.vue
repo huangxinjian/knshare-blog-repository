@@ -10,6 +10,7 @@
             v-bind:name="name"  
             v-bind:placeholder="msg" 
             v-bind:class="[ verifyClass,
+                            registPhoneNoClass,
                             usernameErrorClass,
                             passwordErrorClass,
                             registerPwdErrorClass,
@@ -42,6 +43,10 @@ export default {
             default:''
         },
         'verifyClass':{
+            type:String,
+            default:''
+        },
+        'registPhoneNoClass':{
             type:String,
             default:''
         },
@@ -88,7 +93,7 @@ export default {
 
 <style scoped>
 
-/*当用户输入错误的时候，显示红色的placeholder*/
+    /*当用户输入错误的时候，显示红色的placeholder*/
     input.invalid:-ms-input-placeholder{
          color: red;
          font-size: 20px;
@@ -100,6 +105,7 @@ export default {
          font-size: 20px;
          font-family: 黑体;
     }
+
     input::-webkit-input-placeholder {
         /* placeholder颜色  */
          color: #aab2bd;
@@ -111,16 +117,16 @@ export default {
      }
 
     input{
-            padding-left: 5px;
-            padding-bottom: 13px;
-            background: transparent;
-            border: none;
-            border-bottom-style: solid;
-            border-bottom-width: 1px;
-            border-bottom-color: #b5b5b5;
-            width: 388px;
-            font-size: 20px;
-            color: #1A1A1A;
+        padding-left: 5px;
+        padding-bottom: 13px;
+        background: transparent;
+        border: none;
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        border-bottom-color: #b5b5b5;
+        width: 388px;
+        font-size: 20px;
+        color: #1A1A1A;
     }
 
     input:focus { 
@@ -128,18 +134,33 @@ export default {
          background-color: transparent;
      }
 
-     .verify{
-            padding-left: 5px;
-            padding-bottom: 13px;
-            background: transparent;
-            border: none;
-            border-bottom-style: solid;
-            border-bottom-width: 1px;
-            border-bottom-color: #b5b5b5;
-            width: 270px;
-            font-size: 20px;
-            color: #1A1A1A;
+    .verify{
+        padding-left: 5px;
+        padding-bottom: 13px;
+        background: transparent;
+        border: none;
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        border-bottom-color: #b5b5b5;
+        width: 270px;
+        font-size: 20px;
+        color: #1A1A1A;
+    }
+
+    .registPhoneNo{
+        padding-left: 5px;
+        padding-bottom: 1px;
+        background: transparent;
+        border: none;
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        border-bottom-color: #b5b5b5;
+        width: 200px;
+        font-size: 20px;
+        color: #1A1A1A;
      }
+
+
 
   
      

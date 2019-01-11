@@ -8,30 +8,101 @@
                 <img src="../assets/images/logo-blue.png">
                 <label class="registTitle">KNShare</label>
 
+                <!-- 进度条 -->
                 <div class="progressBar">
-                     <div class="circleBar progressActiveColor accountCircle"></div>
+                     <div class="circleBar progressActiveColor accountCircle" ></div>
                      <span>账户信息</span>
-                     <div class="strightBar1 progressNotActiveColor"></div>
-                     <div class="circleBar progressNotActiveColor userinfoCircle "></div>
+                     <div class="strightBar1" v-bind:class="[firstBar ? 'progressActiveColor' : 'progressNotActiveColor' ]"></div>
+                     <div class="circleBar userinfoCircle "  v-bind:class="[firstBar ? 'progressActiveColor' : 'progressNotActiveColor' ]"></div>
                      <span class="userinfoSpan">个人信息</span>
                      <div class="strightBar2 progressNotActiveColor"></div>
                      <div class="circleBar progressNotActiveColor finishCircle "></div>
                      <span class="finishSpan">注册完成</span>
                 </div>
 
-                <template>
+                <template v-if="progressStatus==1">
                     <div class="registerUsernameDiv">
-                        <base-input type="text" v-bind:msg="registerUsernamePlaceholder" :registerUsernameErrorClass="registerUsernameError" name="registUsername" v-on:returnValue="returnValue"></base-input>
+                        <base-input type="text" ref="rusername" v-bind:msg="registerUsernamePlaceholder" :registerUsernameErrorClass="registerUsernameError" name="registUsername" v-on:returnValue="returnValue"></base-input>
+                        <img class="tipIcon usernameTip" src="../assets/images/tipIcon.png" v-on:mouseenter='showUsernameTip' v-on:mouseout='hideUsernameTip' >
+                        <div class="tag" v-show="usernameTipStatus">
+                            <em></em>   
+                            <span></span>
+                            <p>账号名只能由英文字母和数字组成，并且需要英文开头，长度为5-16个字符。</p>
+                        </div>
                     </div>
-
                     <div class="registerPwdDiv">
-                        <base-input type="text" v-bind:msg="registerPwdPlaceholder" :registerPwdErrorClass="registerPwdError" name="registPwd" v-on:returnValue="returnValue"></base-input>
+                        <base-input type="password" ref="rpassword" :msg="registerPwdPlaceholder" :registerPwdErrorClass="registerPwdError" name="registPwd" @returnValue="returnValue"></base-input>
+                        <img class="tipIcon passwordTip" src="../assets/images/tipIcon.png" v-on:mouseenter='showPwdTip' v-on:mouseout='hidePwdTip' >
+                        <div class="tag1" v-show="pwdTipStatus">
+                            <em></em>   
+                            <span></span>
+                            <p>密码可由英文字母、数字以及特殊字符组成，长度为5-16个字符</p>
+                        </div>
+                    </div>
+                    <div class="registerPwdAgainDiv">
+                        <base-input type="password" ref="pwdAgain" :msg="registerPwdAgainPlaceholder" :registerPwdAgainErrorClass="registerPwdAgainError" name="registPwdAgain" v-on:returnValue="returnValue"></base-input>
                     </div>
 
-                    <div class="registerPwdAgainDiv">
-                        <base-input type="text" ref="pwdAgain" v-bind:msg="registerPwdAgainPlaceholder" :registerPwdAgainErrorClass="registerPwdAgainError" name="registPwdAgain" v-on:returnValue="returnValue"></base-input>
-                    </div>
+                    <span class="nextProgress firstProgress" v-on:click="verify(progressStatus)">下一步</span>
                 </template>
+
+                <template v-else-if="progressStatus==2">
+                    <div class="row">
+                        <div class="col-lg-2">
+
+                        </div>
+                        <div class="col-lg-7">
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <span class="personalInfoSpanOptionName">性别：</span> 
+                                    <span class="personalInfoSpanOptionName">手机号码：</span>
+                                    <span class="personalInfoSpanOptionName">邮箱：</span>
+                                    <span class="personalInfoSpanOptionName">是否工作：</span>
+                                    <span class="personalInfoSpanOptionName">工作方向：</span>
+                                    <!-- <span class="personalInfoSpan">理想方向：</span> -->
+                                </div>
+                                <div class="col-lg-7">
+                                    <span class="personalInfoSpanOptionValue genderSpan">
+                                        <input id="male" type="radio" name="gender" value="male" v-model="prosonalInfo.gender" checked>
+                                        <label for="male" class="maleLabel" ></label>
+                                        <img style="margin: -11px 30px 0px 0px;" src="../assets/images/male.png" title="男性" alt="男性">
+                       
+                                        <input id="female" type="radio" name="gender" value="female" v-model="prosonalInfo.gender">
+                                        <label for="female" class="femaleLabel"></label>
+                                        <img  style="margin: -11px 30px 0px 7px;" src="../assets/images/female.png" title="女性" alt="女性">
+                                    </span>
+
+                                    <span class="personalInfoSpanOptionValue registPhoneNoSpan">
+                                        <base-input type="text" name="registPhoneNumber" key="registPhoneNumber" registPhoneNoClass="registPhoneNo"  @returnValue="returnValue"></base-input>
+                                        <img style="margin: -11px 30px 0px 0px;"  class="tipIcon phoneNumberTip" src="../assets/images/tipIcon.png" v-on:mouseenter='showPhoneNoTip' v-on:mouseout='hidePhoneNoTip' >
+                                        <div class="registPhoneNoTip" v-show="phoneNoTipStatus">
+                                            <em></em>   
+                                            <span></span>
+                                            <p>手机号码可用作后续登录账号</p>
+                                        </div>
+                                    </span>
+
+                                    <span class="personalInfoSpanOptionValue registEmailSpan">
+                                        <base-input type="text" name="registEmail" key="registEmail"   registPhoneNoClass="registPhoneNo" @returnValue="returnValue"></base-input>
+                                        <img style="margin: -11px 30px 0px 0px;"  class="tipIcon emailTip" src="../assets/images/tipIcon.png" v-on:mouseenter='showEmailTip' v-on:mouseout='hideEmailTip' >
+                                        <div class="registEmailTip" v-show="emailTipStatus">
+                                            <em></em>   
+                                            <span></span>
+                                            <p>邮箱可用作后续登录账号</p>
+                                        </div>
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+
+                        </div>
+                    </div>
+                    <span class="nextProgress secondProgress" v-on:click="verify(progressStatus)">下一步(可跳过)</span>
+                </template>
+
+
             </div>
         </div>
         
@@ -64,12 +135,30 @@ export default {
             'registerPwdAgainPlaceholder':'请再次输入密码', 
             'registerPwdAgainError':''  ,
             'registerPwdAgainStatus':false,
+
             
             //封装的注册信息
-            'registUser':{
+            'registUser':{  //账号信息
                 'registName':'',
                 'registPwd':''
-            }
+            },
+            'prosonalInfo':{  //个人信息
+                'gender':'male',
+                'phoneNo':'',
+                'email':''
+            },
+
+            //注册进度条控制变量
+            'firstBar':false,
+
+            //注册进度控制变量 1代表账号信息 2代表个人信息 3代表验证码信息
+            'progressStatus': 2,
+
+            //提示信息显示控制变量
+            'usernameTipStatus':false,
+            'pwdTipStatus':false,
+            'phoneNoTipStatus':false,
+            'emailTipStatus':false
         }
     },
     methods: {
@@ -80,12 +169,20 @@ export default {
                     this.registerUsernamePlaceholder = '注册名不能为空';
                     this.registerUsernameError = 'invalid';
                     this.registerUsernameStatus = false;
-                }else{
-                    console.log('registName'+value);
-                    this.registerUsernamePlaceholder = '账号名由英文和数字组成';
-                    this.registerUsernameError = '';
-                    this.registUser.registName = value;
-                    this.registerUsernameStatus = true;
+                }else{  
+                    var pattern = /^[a-zA-Z][a-zA-Z0-9_]{4,15}$/;  //验证只能输入英文和数字，并且需要英文开头，长度为4-15个字符
+                    if(pattern.test(value)){  //说明符合正则表达式
+                        this.registerUsernamePlaceholder = '账号名由英文和数字组成';
+                        this.registerUsernameError = '';
+                        this.registUser.registName = value;
+                        this.registerUsernameStatus = true;
+                    }else{//说明符合不正则表达式
+                        this.registerUsernamePlaceholder = '账号名须由英文和数字组成';
+                        this.registerUsernameError = '';
+                        this.$refs.rusername.value = "";  //清空value的值
+                        this.registerUsernameError = 'invalid';
+                        this.registerUsernameStatus = false;
+                    }
                 }
             }else if(name == 'registPwd'){
                  if(value == ''){
@@ -119,8 +216,52 @@ export default {
                         this.registerPwdAgainStatus = true;
                     }
                 }
+            }else if(name == 'registPhoneNumber'){
+                if(value != ''){
+                    this.prosonalInfo.phoneNo = value;
+                }
             }
         },
+        verify(progressStatus){  //执行下一步的处理函数，判断信息填写是否正确
+            //验证第一步信息填写是否正确
+            if(progressStatus == 1){
+                if( this.registerUsernameStatus && this.registerPwdAgainStatus && this.registerPwdStatus){
+                    this.progressStatus = 2; //进入下一个注册阶段
+                    this.firstBar = true;  //控制进度条前进
+                }else{
+                    this.$refs.rusername.blur();
+                    this.$refs.pwdAgain.blur();
+                    this.$refs.rpassword.blur();
+                }
+            }else if(progressStatus == 2){
+
+            }
+        },
+        //显示和隐藏提示信息的处理函数
+        showUsernameTip(){
+            this.usernameTipStatus = true;
+        },
+        hideUsernameTip(){
+            this.usernameTipStatus = false;
+        },
+        showPwdTip(){
+            this.pwdTipStatus = true;
+        },
+        hidePwdTip(){
+            this.pwdTipStatus = false;
+        },
+        showPhoneNoTip(){
+            this.phoneNoTipStatus = true;
+        },
+        hidePhoneNoTip(){
+            this.phoneNoTipStatus = false;
+        },
+        showEmailTip(){
+            this.emailTipStatus = true;
+        },
+        hideEmailTip(){
+            this.emailTipStatus = false;
+        }
     },
 }
 </script>
@@ -129,14 +270,14 @@ export default {
 <style scoped>
 
     .registContainer{
-        background-color: blue;
+        /* background-color: blue; */
         margin: 0;
         width: 1520px;
     }
 
     .registImg{
         padding: 0;
-        background-color: red;
+        /* background-color: red; */
     }
     .registImg img{
         width: 1034px;
@@ -177,15 +318,11 @@ export default {
         margin-top: 28px;
     }
 
-    
-
     .progressBar{
         width: 300px;
         height: 30px;
         margin: 9px 0 0 117px;
     }
-
-
 
     .circleBar{
         width: 15px;
@@ -206,7 +343,7 @@ export default {
         width: 100px;
         height: 8px;
         position: relative;
-        left: 145px;
+        left: 146px;
         bottom: 82px;
     }
 
@@ -251,4 +388,307 @@ export default {
         color: #8095a6;
         font-family: 黑体
     }
+
+    .nextProgress{
+        color: #0084ff;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    /* 第一个 下一步 */
+    .firstProgress{
+        position: absolute;
+        left: 76%;
+        top: 72%;
+    }
+
+    /* 第二个 下一步 */
+    .secondProgress{
+        position: absolute;
+        left: 70%;
+        top: 80%;
+    }
+
+    .tipIcon{
+        margin: 0;
+    }
+
+    .usernameTip{
+        position: absolute;
+        top: 41%;
+        right: 12%;
+        z-index: 3;
+    }
+
+    .passwordTip{
+        position: absolute;
+        top: 50.5%;
+        right: 12%;
+        z-index: 1;
+    }
+
+    .phoneNumberTip{
+        position: absolute;
+        /* top: -19.5%; */
+        bottom: 6%;
+        left: 88%;
+        z-index: 3;
+    }
+
+    .emailTip{
+        position: absolute;
+        /* top: -19.5%; */
+        bottom: 6%;
+        left: 88%;
+        z-index: 1;
+    }
+
+
+    .tag{ 
+        width: 155px;
+        height: 70px;
+        background-color: #fafafa;
+        border: 1px solid #b5b5b5;
+        position: absolute;
+        left: 59.9%;
+        top: 47%;
+        border-radius: 4px;
+        z-index: 2;
+    }
+    .tag em{
+        display: block;
+        border-width: 11px;
+        position: absolute;
+        bottom: 68px;
+        left: 121px;
+        border-style: solid dashed dashed;
+        border-color: transparent transparent #b5b5b5 transparent;
+        font-size: 0;
+        line-height: 0;
+    }
+    .tag span{
+        display: block;
+        border-width: 11px;
+        position: absolute;
+        bottom: 67px;
+        left: 121px;
+        border-style: solid dashed dashed;
+        border-color: transparent transparent #fafafa transparent;
+        font-size: 0;
+        line-height: 0;
+    }
+    .tag p{
+        font-size: 12px;
+        color: #b5b5b5;
+        padding-left: 4px;
+        padding-top: 3px;
+        font-family: 微软雅黑;
+    }
+
+    
+
+     .tag1{ 
+        width: 155px;
+        height: 70px;
+        background-color: #fafafa;
+        border: 1px solid #b5b5b5;
+        position: absolute;
+        left: 59.9%;
+        top: 56.5%;
+        border-radius: 4px;
+        z-index: 0;
+    }
+    .tag1 em{
+        display: block;
+        border-width: 11px;
+        position: absolute;
+        bottom: 68px;
+        left: 121px;
+        border-style: solid dashed dashed;
+        border-color: transparent transparent #b5b5b5 transparent;
+        font-size: 0;
+        line-height: 0;
+    }
+    .tag1 span{
+        display: block;
+        border-width: 11px;
+        position: absolute;
+        bottom: 67px;
+        left: 121px;
+        border-style: solid dashed dashed;
+        border-color: transparent transparent #fafafa transparent;
+        font-size: 0;
+        line-height: 0;
+    }
+    .tag1 p{
+        font-size: 12px;
+        color: #b5b5b5;
+        padding-left: 4px;
+        padding-top: 3px;
+        font-family: 微软雅黑;
+    }
+
+    .registPhoneNoTip{ 
+        width: 155px;
+        height: 60px;
+        background-color: #fafafa;
+        border: 1px solid #b5b5b5;
+        position: absolute;
+        left: 27.4%;
+        top: 116.5%;
+        border-radius: 4px;
+        text-align: left;
+        z-index: 2;
+    }
+    .registPhoneNoTip em{
+        display: block;
+        border-width: 11px;
+        position: absolute;
+        bottom: 58px;
+        left: 121px;
+        border-style: solid dashed dashed;
+        border-color: transparent transparent #b5b5b5 transparent;
+        font-size: 0;
+        line-height: 0;
+    }
+    .registPhoneNoTip span{
+        display: block;
+        border-width: 11px;
+        position: absolute;
+        bottom: 57px;
+        left: 121px;
+        border-style: solid dashed dashed;
+        border-color: transparent transparent #fafafa transparent;
+        font-size: 0;
+        line-height: 0;
+    }
+    .registPhoneNoTip p{
+        font-size: 12px;
+        color: #b5b5b5;
+        padding-left: 4px;
+        padding-top: 3px;
+        font-family: 微软雅黑;
+    }
+
+     .registEmailTip{ 
+        width: 155px;
+        height: 60px;
+        background-color: #fafafa;
+        border: 1px solid #b5b5b5;
+        position: absolute;
+        left: 27.4%;
+        top: 116.5%;
+        border-radius: 4px;
+        text-align: left;
+        z-index: 0;
+    }
+    .registEmailTip em{
+        display: block;
+        border-width: 11px;
+        position: absolute;
+        bottom: 58px;
+        left: 121px;
+        border-style: solid dashed dashed;
+        border-color: transparent transparent #b5b5b5 transparent;
+        font-size: 0;
+        line-height: 0;
+    }
+    .registEmailTip span{
+        display: block;
+        border-width: 11px;
+        position: absolute;
+        bottom: 57px;
+        left: 121px;
+        border-style: solid dashed dashed;
+        border-color: transparent transparent #fafafa transparent;
+        font-size: 0;
+        line-height: 0;
+    }
+    .registEmailTip p{
+        font-size: 12px;
+        color: #b5b5b5;
+        padding-left: 4px;
+        padding-top: 3px;
+        font-family: 微软雅黑;
+    }
+
+
+    .personalInfoSpanOptionName{
+        font-size: 18px;
+        font-family: 黑体;
+        color: #010101;
+        display: block;
+        text-align: right;
+        margin: 34px 0px 0px;
+    }
+
+    .personalInfoSpanOptionValue{
+        font-size: 18px;
+        font-family: 黑体;
+        color: #010101;
+        display: block;
+        text-align: right;
+        margin: 34px 0px 0px;
+    }
+
+    .genderSpan > input[type="radio"] {
+        width: 20px;
+        height: 20px;
+        opacity: 0;
+    }
+
+    .genderSpan > label {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 1px solid #999;
+    }
+
+    /*设置选中的input的样式*/
+    /* + 是兄弟选择器,获取选中后的label元素*/
+    .genderSpan > input:checked+label { 
+        background-color: #0084ff;
+        border: 1px solid #0084ff;
+    }
+
+    .genderSpan > input:checked+label::after {
+        position: absolute;
+        content: "";
+        width: 5px;
+        height: 10px;
+        top: 3px;
+        left: 6px;
+        
+        /* 出现一个勾号 */
+        border: 2px solid #fff; 
+        border-top: none;
+        border-left: none;
+        transform: rotate(45deg)
+    }
+
+    .maleLabel{
+        position: absolute;
+        left: 5px;
+        top: 38px;
+    }
+
+    .femaleLabel{
+        position: absolute;
+        left: 85px;
+        top: 38px;
+    }
+
+    .registPhoneNoSpan{
+        position: absolute; 
+        left: 2px;
+        top: 57px;
+    }
+
+    .registEmailSpan{
+        position: absolute; 
+        left: 2px;
+        top: 118px;
+    }
+
 </style>
