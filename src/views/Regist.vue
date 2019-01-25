@@ -48,9 +48,7 @@
 
                 <template v-else-if="progressStatus==2">
                     <div class="row">
-                        <div class="col-lg-2">
-
-                        </div>
+                        <div class="col-lg-2"> </div>
                         <div class="col-lg-7">
                             <div class="row">
                                 <div class="col-lg-5">
@@ -58,39 +56,54 @@
                                     <span class="personalInfoSpanOptionName">手机号码：</span>
                                     <span class="personalInfoSpanOptionName">邮箱：</span>
                                     <span class="personalInfoSpanOptionName">是否工作：</span>
-                                    <span class="personalInfoSpanOptionName">工作方向：</span>
-                                    <!-- <span class="personalInfoSpan">理想方向：</span> -->
+                                    <span v-if="prosonalInfo.workingTruth == 'working'" class="personalInfoSpanOptionName">工作方向：</span> 
+                                    <span v-else-if="prosonalInfo.workingTruth == 'unemployed'" class="personalInfoSpanOptionName">理想方向：</span> 
                                 </div>
                                 <div class="col-lg-7">
+                                    <!-- 性别选择 -->
                                     <span class="personalInfoSpanOptionValue genderSpan">
                                         <input id="male" type="radio" name="gender" value="male" v-model="prosonalInfo.gender" checked>
                                         <label for="male" class="maleLabel" ></label>
-                                        <img style="margin: -11px 30px 0px 0px;" src="../assets/images/male.png" title="男性" alt="男性">
+                                        <img style="margin: -11px 50px 0px 0px;" src="../assets/images/male.png" title="男性" alt="男性">
                        
                                         <input id="female" type="radio" name="gender" value="female" v-model="prosonalInfo.gender">
                                         <label for="female" class="femaleLabel"></label>
-                                        <img  style="margin: -11px 30px 0px 7px;" src="../assets/images/female.png" title="女性" alt="女性">
+                                        <img  style="margin: -11px 13px 0px 7px;" src="../assets/images/female.png" title="女性" alt="女性">
                                     </span>
-
+                                    <!-- 手机号码 -->
                                     <span class="personalInfoSpanOptionValue registPhoneNoSpan">
                                         <base-input type="text" name="registPhoneNumber" key="registPhoneNumber" registPhoneNoClass="registPhoneNo"  @returnValue="returnValue"></base-input>
-                                        <img style="margin: -11px 30px 0px 0px;"  class="tipIcon phoneNumberTip" src="../assets/images/tipIcon.png" v-on:mouseenter='showPhoneNoTip' v-on:mouseout='hidePhoneNoTip' >
+                                        <img style="margin: -11px 30px 0px 0px;display:block;background-color: #f6fafb;"  class="tipIcon phoneNumberTip" :src="phoneNoTipSrc" v-on:mouseenter='showPhoneNoTip' v-on:mouseout='hidePhoneNoTip' >
                                         <div class="registPhoneNoTip" v-show="phoneNoTipStatus">
                                             <em></em>   
                                             <span></span>
-                                            <p>手机号码可用作后续登录账号</p>
+                                            <p :style="phoneErrorTip ? 'color:red;font-weight:bold' : ''">{{phoneTipMsg}}</p>
                                         </div>
                                     </span>
-
+                                    <!-- 邮箱 -->
                                     <span class="personalInfoSpanOptionValue registEmailSpan">
                                         <base-input type="text" name="registEmail" key="registEmail"   registPhoneNoClass="registPhoneNo" @returnValue="returnValue"></base-input>
-                                        <img style="margin: -11px 30px 0px 0px;"  class="tipIcon emailTip" src="../assets/images/tipIcon.png" v-on:mouseenter='showEmailTip' v-on:mouseout='hideEmailTip' >
+                                        <img style="margin: -11px 30px 0px 0px; display:block;background-color: #f6fafb;"  class="tipIcon emailTip" :src="emailTipSrc" v-on:mouseenter='showEmailTip' v-on:mouseout='hideEmailTip' >
                                         <div class="registEmailTip" v-show="emailTipStatus">
                                             <em></em>   
                                             <span></span>
-                                            <p>邮箱可用作后续登录账号</p>
+                                            <p :style="emailErrorTip ? 'color:red;font-weight:bold' : ''">{{emailTipMsg}}</p>
                                         </div>
                                     </span>
+                                    <!-- 是否工作 -->
+                                    <span class="personalInfoSpanOptionValue registWorkStatusSpan">
+                                        <input id="working" type="radio" name="workStatus" value="working" v-model="prosonalInfo.workingTruth" checked>
+                                        <label for="working" class="workingLabel" ></label>
+                                        <span style="position: absolute;top: 214px;right: 100px;">工作中</span>
+                                        <input id="unemployed" type="radio" name="workStatus" value="unemployed" v-model="prosonalInfo.workingTruth">
+                                        <label for="unemployed" class="unemployedLabel"></label>
+                                        <span style="position: absolute;top: 214px;right: 0px;">未工作</span>
+                                    </span>
+                                    <!-- 行业方向 -->
+                                    <span v-if="prosonalInfo.workingTruth != ''" class="personalInfoSpanOptionValue registWorkDirectionSpan">
+                                         <base-input type="text" name="" key="" registPhoneNoClass=""  @returnValue="returnValue"></base-input>
+                                    </span>
+
                                 </div>
 
                             </div>
@@ -113,6 +126,8 @@
 
 import 'bootstrap/dist/css/bootstrap.css'
 import BaseInput from '@/components/common/BaseInput.vue'
+import tipIcon from '@/assets/images/tipIcon.png'
+import tipError from '@/assets/images/tipError.png'
 
 export default {
     name:'regist',
@@ -136,6 +151,16 @@ export default {
             'registerPwdAgainError':''  ,
             'registerPwdAgainStatus':false,
 
+            //手机号码相关信息
+            'phoneNoTipSrc': tipIcon,
+            'phoneTipMsg':'手机号码可用作后续登录账号',
+            'phoneErrorTip':false,
+
+            //邮箱相关信息
+            'emailTipSrc': tipIcon,
+            'emailTipMsg':'邮箱可用作后续登录账号',
+            'emailErrorTip':false,
+
             
             //封装的注册信息
             'registUser':{  //账号信息
@@ -143,9 +168,10 @@ export default {
                 'registPwd':''
             },
             'prosonalInfo':{  //个人信息
-                'gender':'male',
+                'gender':'',
                 'phoneNo':'',
-                'email':''
+                'email':'',
+                'workingTruth':'' //是否工作
             },
 
             //注册进度条控制变量
@@ -159,66 +185,101 @@ export default {
             'pwdTipStatus':false,
             'phoneNoTipStatus':false,
             'emailTipStatus':false
+
+            
         }
     },
     methods: {
         returnValue(value,name){  //用户输入的信息返回值
-             if(name == 'registUsername'){
-                 if(value == ''){
-                    console.log('注册名不能为空');
-                    this.registerUsernamePlaceholder = '注册名不能为空';
+            var functionname = "this.verify"+name.substring(0,1).toUpperCase()+name.substring(1);
+            console.log(functionname+"('"+value+"')");
+            eval(functionname+"('"+value+"')");
+            // if(name == 'registPhoneNumber'){
+            //    verifyRegistPhoneNumber(value);
+            // }
+        },
+        verifyRegistUsername(value){//验证注册名是否符合格式
+            if(value == '' || value == null){
+                console.log('注册名不能为空');
+                this.registerUsernamePlaceholder = '注册名不能为空';
+                this.registerUsernameError = 'invalid';
+                this.registerUsernameStatus = false;
+            }else{  
+                var pattern = /^[a-zA-Z][a-zA-Z0-9_]{4,15}$/;  //验证只能输入英文和数字，并且需要英文开头，长度为4-15个字符
+                if(pattern.test(value)){  //说明符合正则表达式
+                    this.registerUsernamePlaceholder = '账号名由英文和数字组成';
+                    this.registerUsernameError = '';
+                    this.registUser.registName = value;
+                    this.registerUsernameStatus = true;
+                }else{//说明符合不正则表达式
+                    this.registerUsernamePlaceholder = '账号名须由英文和数字组成';
+                    this.registerUsernameError = '';
+                    this.$refs.rusername.value = "";  //清空value的值
                     this.registerUsernameError = 'invalid';
                     this.registerUsernameStatus = false;
-                }else{  
-                    var pattern = /^[a-zA-Z][a-zA-Z0-9_]{4,15}$/;  //验证只能输入英文和数字，并且需要英文开头，长度为4-15个字符
-                    if(pattern.test(value)){  //说明符合正则表达式
-                        this.registerUsernamePlaceholder = '账号名由英文和数字组成';
-                        this.registerUsernameError = '';
-                        this.registUser.registName = value;
-                        this.registerUsernameStatus = true;
-                    }else{//说明符合不正则表达式
-                        this.registerUsernamePlaceholder = '账号名须由英文和数字组成';
-                        this.registerUsernameError = '';
-                        this.$refs.rusername.value = "";  //清空value的值
-                        this.registerUsernameError = 'invalid';
-                        this.registerUsernameStatus = false;
-                    }
                 }
-            }else if(name == 'registPwd'){
-                 if(value == ''){
-                    console.log('密码不能为空');
-                    this.registerPwdPlaceholder = '密码不能为空';
-                    this.registerPwdError = 'invalid';
-                    this.registerPwdStatus = false;
-                }else{
-                    console.log('registName'+value);
-                    this.registerPwdPlaceholder = '密码由英文、数字和特殊字符组成';
-                    this.registerPwdError = '';
-                    this.registUser.registPwd = value;
-                    this.registerPwdStatus = true;
-                }
-               
-            }else if(name == 'registPwdAgain'){
-                if(value == ''){
-                    console.log('密码不能为空');
-                    this.registerPwdAgainPlaceholder = '请再输入一次密码';
+            }
+        },
+        verifyRegistPwd(value){  //验证注册密码是否符合格式
+             if(value == '' || value == null ){
+                console.log('密码不能为空');
+                this.registerPwdPlaceholder = '密码不能为空';
+                this.registerPwdError = 'invalid';
+                this.registerPwdStatus = false;
+            }else{
+                console.log('密码：'+value);
+                this.registerPwdPlaceholder = '密码由英文、数字和特殊字符组成';
+                this.registerPwdError = '';
+                this.registUser.registPwd = value;
+                this.registerPwdStatus = true;
+            }
+        },
+        verifyRegistPwdAgain(value){ //验证重复密码是否正确
+            if(value == '' || value == null ){
+                console.log('密码不能为空');
+                this.registerPwdAgainPlaceholder = '请再输入一次密码';
+                this.registerPwdAgainError = 'invalid';
+                this.registerPwdAgainStatus = false;
+            }else{
+                if(value != this.registUser.registPwd){  //有重复输入但是密码不一致
+                    this.registerPwdAgainPlaceholder = '两次输入的密码不一致';
                     this.registerPwdAgainError = 'invalid';
                     this.registerPwdAgainStatus = false;
-                }else{
-                    if(value != this.registUser.registPwd){
-                        this.registerPwdAgainPlaceholder = '两次输入的密码不一致';
-                        this.registerPwdAgainError = 'invalid';
-                        this.registerPwdAgainStatus = false;
-                        this.$refs.pwdAgain.value = "";  //清空value的值
-                    }else{
-                        this.registerPwdAgainPlaceholder = '请再次输入密码';
-                        this.registerPwdAgainError = '';
-                        this.registerPwdAgainStatus = true;
-                    }
+                    this.$refs.pwdAgain.value = "";  //父组件操作子组件来清空子组件中value的值
+                }else{  //密码一致
+                    this.registerPwdAgainPlaceholder = '请再次输入密码';
+                    this.registerPwdAgainError = '';
+                    this.registerPwdAgainStatus = true;
                 }
-            }else if(name == 'registPhoneNumber'){
-                if(value != ''){
-                    this.prosonalInfo.phoneNo = value;
+            }
+        },
+        verifyRegistPhoneNumber(value){ //验证手机号码是否为空且格式是否正确
+            if(value != ''){
+                var reg = /^1[0-9]{10}$/;  //移动手机号码
+                if(reg.test(value)){  //说明符合正则表达式
+                    this.prosonalInfo.phoneNo = value; //保存手机号码到data中
+                    this.phoneNoTipSrc = tipIcon;
+                    this.phoneTipMsg = "手机号码可用作后续登录账号!";
+                    this.phoneErrorTip = false;
+                }else{//说明符合不正则表达式
+                    this.phoneNoTipSrc = tipError;
+                    this.phoneTipMsg = "手机号码格式错误，请重新输入正确的手机号码！";
+                    this.phoneErrorTip = true;
+                }
+            }
+        },
+        verifyRegistEmail(value){  //验证邮箱是否为空且格式是否正确
+            if(value != ''){
+                var reg = new RegExp("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$");   
+                if(reg.test(value)){  //说明符合正则表达式
+                    this.prosonalInfo.email = value; //保存手机号码到data中
+                    this.emailTipSrc = tipIcon;
+                    this.emailTipMsg = "邮箱可用作后续登录账号!";
+                    this.emailErrorTip = false;
+                }else{//说明符合不正则表达式
+                    this.emailTipSrc = tipError;
+                    this.emailTipMsg = "邮箱格式错误，请重新输入正确的邮箱！";
+                    this.emailErrorTip = true;
                 }
             }
         },
@@ -290,7 +351,7 @@ export default {
         background-color:#f6fafb;
     }
 
-     .registDiv img{
+    .registDiv img{
         margin-left: 186px;
         margin-top: 12px;
     }
@@ -313,7 +374,7 @@ export default {
         margin-top: 28px;
     }
 
-     .registDiv .registerPwdAgainDiv{
+    .registDiv .registerPwdAgainDiv{
         margin-left: 71px;
         margin-top: 28px;
     }
@@ -433,7 +494,7 @@ export default {
         /* top: -19.5%; */
         bottom: 6%;
         left: 88%;
-        z-index: 3;
+        z-index: 4;
     }
 
     .emailTip{
@@ -441,7 +502,7 @@ export default {
         /* top: -19.5%; */
         bottom: 6%;
         left: 88%;
-        z-index: 1;
+        z-index: 2;
     }
 
 
@@ -539,7 +600,7 @@ export default {
         top: 116.5%;
         border-radius: 4px;
         text-align: left;
-        z-index: 2;
+        z-index: 3;
     }
     .registPhoneNoTip em{
         display: block;
@@ -581,7 +642,7 @@ export default {
         top: 116.5%;
         border-radius: 4px;
         text-align: left;
-        z-index: 0;
+        z-index: 1;
     }
     .registEmailTip em{
         display: block;
@@ -675,7 +736,7 @@ export default {
 
     .femaleLabel{
         position: absolute;
-        left: 85px;
+        left: 102px;
         top: 38px;
     }
 
@@ -689,6 +750,53 @@ export default {
         position: absolute; 
         left: 2px;
         top: 118px;
+    }
+
+    .registWorkStatusSpan > input[type="radio"] {
+        width: 20px;
+        height: 20px;
+        opacity: 0;
+    }
+
+    .registWorkStatusSpan > label {
+        width: 20px;
+        height: 20px;
+        /* border-radius: 50%; */
+        border: 1px solid #999;
+    }
+
+    /*设置选中的input的样式*/
+    /* + 是兄弟选择器,获取选中后的label元素*/
+    .registWorkStatusSpan > input:checked+label { 
+        background-color: #0084ff;
+        border: 1px solid #0084ff;
+    }
+
+    .registWorkStatusSpan > input:checked+label::after {
+        position: absolute;
+        content: "";
+        width: 5px;
+        height: 10px;
+        top: 3px;
+        left: 6px;
+        
+        /* 出现一个勾号 */
+        border: 2px solid #fff; 
+        border-top: none;
+        border-left: none;
+        transform: rotate(45deg)
+    }
+
+    .workingLabel{
+        position: absolute;
+        left: 5px;
+        top: 217px;
+    }
+
+    .unemployedLabel{
+        position: absolute;
+        left: 102px;
+        top: 217px;
     }
 
 </style>

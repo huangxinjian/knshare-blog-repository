@@ -83,7 +83,7 @@ export default {
             }
         },
         blur(){  //校验输入的内容是否正确 
-        
+            console.log(this.name);
             this.$emit('returnValue',this.value,this.name);  
 
         }
