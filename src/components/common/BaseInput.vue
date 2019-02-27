@@ -9,6 +9,7 @@
     <input  v-bind:type="type" 
             v-bind:name="name"  
             v-bind:placeholder="msg" 
+            v-bind:readonly="workSortReadonly"
             v-bind:class="[ verifyClass,
                             registPhoneNoClass,
                             usernameErrorClass,
@@ -30,6 +31,7 @@ export default {
         'name':String,
         'msg':String,
         'type':String,
+        'workSortReadonly':String,
         'usernameErrorClass':{
             type:String,
             default:''
@@ -80,10 +82,17 @@ export default {
             if(this.name=="password"){
                 // 显示验证码
                 this.$emit('showVerify');  
+            }else if(this.name == "registWorkingTruth"){
+                console.log("sss");
+                  this.$emit('showModal');  
             }
         },
         blur(){  //校验输入的内容是否正确 
             console.log(this.name);
+            // if(this.name=="registWorkingTruth"){
+            //     // 把模态框值设为false
+            //     this.$emit('hideModal');  
+            // }
             this.$emit('returnValue',this.value,this.name);  
 
         }
@@ -159,11 +168,4 @@ export default {
         font-size: 20px;
         color: #1A1A1A;
      }
-
-
-
-  
-     
-   
-
 </style>

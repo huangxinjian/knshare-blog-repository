@@ -99,9 +99,9 @@
                                         <label for="unemployed" class="unemployedLabel"></label>
                                         <span style="position: absolute;top: 214px;right: 0px;">未工作</span>
                                     </span>
-                                    <!-- 行业方向 -->
+                                    <!-- 工作方向（工作中或理想工作） -->
                                     <span v-if="prosonalInfo.workingTruth != ''" class="personalInfoSpanOptionValue registWorkDirectionSpan">
-                                         <base-input type="text" name="" key="" registPhoneNoClass=""  @returnValue="returnValue"></base-input>
+                                         <base-input type="text" name="registWorkingTruth" key="registWorkingTruth" workSortReadonly="readonly"  registPhoneNoClass="registPhoneNo"  @showModal="showModal" @hideModal="hideModal" ></base-input>
                                     </span>
 
                                 </div>
@@ -113,9 +113,10 @@
                         </div>
                     </div>
                     <span class="nextProgress secondProgress" v-on:click="verify(progressStatus)">下一步(可跳过)</span>
+                    <WorkSort :modal = "modalShow" @hideModal="hideModal"  ></WorkSort>
                 </template>
 
-
+            
             </div>
         </div>
         
@@ -128,11 +129,12 @@ import 'bootstrap/dist/css/bootstrap.css'
 import BaseInput from '@/components/common/BaseInput.vue'
 import tipIcon from '@/assets/images/tipIcon.png'
 import tipError from '@/assets/images/tipError.png'
+import WorkSort from '@/components/workSort/WorkSort.vue'
 
 export default {
     name:'regist',
     components:{
-        BaseInput
+        BaseInput,WorkSort
     },
     data(){
         return{
@@ -184,7 +186,8 @@ export default {
             'usernameTipStatus':false,
             'pwdTipStatus':false,
             'phoneNoTipStatus':false,
-            'emailTipStatus':false
+            'emailTipStatus':false,
+            'modalShow':false
 
             
         }
@@ -322,6 +325,12 @@ export default {
         },
         hideEmailTip(){
             this.emailTipStatus = false;
+        },
+        showModal(){   //显示 工作分类模态框
+            this.modalShow = true;
+        },
+        hideModal(){  //隐藏 工作分类模态框
+            this.modalShow = false;
         }
     },
 }
@@ -392,20 +401,20 @@ export default {
         margin-bottom: 3px;
     }
 
-    .strightBar1{
+    .strightBar1{/*进度条第一个横杠*/
         width: 100px;
         height: 8px;
         position: relative;
         left: 33px;
-        bottom: 35px;
+        bottom: 32px;
     }
 
-    .strightBar2{
+    .strightBar2{ /*进度条第二个横杠*/
         width: 100px;
         height: 8px;
         position: relative;
         left: 146px;
-        bottom: 82px;
+        bottom: 76px;
     }
 
     .progressActiveColor{
@@ -421,27 +430,27 @@ export default {
         left: 19px;
     }
 
-    .userinfoCircle{
+    .userinfoCircle{ /*进度条第二个圆形*/
         position: relative;
         left: 132px;
-        bottom: 47px;
+        bottom: 44px;
     }
 
-    .finishCircle{
+    .finishCircle{/*进度条最后一个圆形*/
         position: relative;
         left: 244px;
-        bottom: 93px;
+        bottom: 88px;
     }
 
-    .userinfoSpan{
+    .userinfoSpan{ /*进度条第二个span*/
         position: relative;
-        bottom: 47px;
+        bottom: 44px;
         left: 113px;
     }
 
-    .finishSpan{
+    .finishSpan{  /*进度条最后一个span*/
         position: relative;
-        bottom: 94px;
+        bottom: 88px;
         left: 224px;
     }
 
@@ -797,6 +806,12 @@ export default {
         position: absolute;
         left: 102px;
         top: 217px;
+    }
+
+    .registWorkDirectionSpan{
+        position: absolute;
+        left: 3px;
+        top: 230px;
     }
 
 </style>
