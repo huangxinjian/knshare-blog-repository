@@ -3,322 +3,51 @@
     <Modal
       width="670"
       v-model="modal1"
+      :scrollable = true
       @on-ok="ok"
       @on-cancel="cancel"
       :mask-closable="false"
-      draggable
+      :styles="{top: '120px',right:'130px'}"
     >
       <p slot="header" style="color:#2b85e4;text-align:center;font-size:16px;">
         <span>工作种类</span>
       </p>
 
       <ol class="workOL">
-        <li>
+        <li v-for="(jobItem,index) in categoryLists" :key=index>
           <div
             class="firstJobSort"
-            v-on:mouseover="changeColor('changeColorStatus1')"
-            v-on:mouseout="restoreColor('changeColorStatus1')"
-            v-bind:class="{ colorClass: changeColorStatus1 }"
+            v-on:mouseover="changeColor(index)"
+            v-on:mouseout="restoreColor(index)"
+            v-bind:class=" [activeClass == index ? 'colorClass': ''] "
           >
-            <span class="titleSpan">互联网IT</span>
+            <span class="titleSpan">{{jobItem.categoryName}}</span>
             <Icon
-              v-if="changeColorStatus1 == false"
+              v-if="changeColorStatus[index] == false"
               type="ios-arrow-forward"
               size="21"
               style="float: right; margin-top: 10px;"
             />
             <div
               class="secondJobSort"
-              :class="{showDetail:changeColorStatus1,hideDetail:!changeColorStatus1}"
+              :class="[showDetailClass == index ? 'showDetail': 'hideDetail']"
             >
-              <div class="detailTitle">互联网IT</div>
+              <div class="detailTitle">{{jobItem.categoryName}}</div>
               <hr>
-              <div class="detailContent">
-                <span @click="selectJob()">Java开发</span>
-                <span>UI设计师</span>
-                <span>Web前端</span>
-                <span>PHP</span>
-                <span>Python</span>
-                <span>Android</span>
-                <span>美工</span>
-                <span>深度学习</span>
-                <span>算法工程师</span>
-                <span>Hadoop</span>
-                <span>Node.js</span>
-                <span>数据开发</span>
-                <span>数据分析师</span>
-                <span>数据架构</span>
-                <span>人工智能</span>
-                <span>区块链</span>
-                <span>电气工程师</span>
-                <span>电子工程师</span>
-                <span>PLC</span>
-                <span>测试工程师</span>
-                <span>设备工程师</span>
-                <span>硬件工程师</span>
-                <span>结构工程师</span>
-                <span>工艺工程师</span>
-                <span>产品经理</span>
-                <span>新媒体运营</span>
-                <span>运营专员</span>
-                <span>淘宝运营</span>
-                <span>天猫运营</span>
-                <span>产品助理</span>
-                <span>产品运营</span>
-                <span>淘宝客服</span>
-                <span>游戏运营</span>
-                <span>编辑</span>
+              <div class="detailContent">  <!-- 循环产生二级分类job -->
+                <span 
+                  v-for="(secondJobItem,subIndex) in jobItem.children" 
+                  :key="subIndex"
+                  v-on:mouseenter="changeDetailContentColor(subIndex)"
+                  v-on:mouseleave="restoreDetailContentColor()"
+                  v-on:click="selectJobSort(index,subIndex)"
+                  v-bind:class=" [activeSubDetailClass == subIndex ? 'detailContentColorClass': ''] "
+                  >
+                    {{secondJobItem.categoryName}}
+                </span>
               </div>
             </div>
           </div>
-        </li>
-        <li>
-          <div
-            class="firstJobSort"
-            v-on:mouseover="changeColor('changeColorStatus2')"
-            v-on:mouseout="restoreColor('changeColorStatus2')"
-            v-bind:class="{ colorClass: changeColorStatus2 }"
-          >
-            <span class="titleSpan">金融</span>
-            <Icon
-              v-if="changeColorStatus2 == false"
-              type="ios-arrow-forward"
-              size="21"
-              style="float: right; margin-top: 10px;"
-            />
-            <div
-              class="secondJobSort"
-              :class="{showDetail:changeColorStatus2,hideDetail:!changeColorStatus2}"
-            >
-              <div class="detailTitle">金融</div>
-              <hr>
-              <div class="detailContent">
-                <span>Java开发</span>
-                <span>UI设计师</span>
-                <span>Web前端</span>
-                <span>PHP</span>
-                <span>Python</span>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div
-            class="firstJobSort"
-            v-on:mouseover="changeColor('changeColorStatus3')"
-            v-on:mouseout="restoreColor('changeColorStatus3')"
-            v-bind:class="{ colorClass: changeColorStatus3 }"
-          >
-            <span class="titleSpan">房地产/建筑</span>
-            <Icon
-              v-if="changeColorStatus3 == false"
-              type="ios-arrow-forward"
-              size="21"
-              style="float: right; margin-top: 10px;"
-            />
-            <div
-              class="secondJobSort"
-              :class="{showDetail:changeColorStatus3,hideDetail:!changeColorStatus3}"
-            >
-              <div class="detailTitle">房地产/建筑</div>
-              <hr>
-              <div class="detailContent">
-                <span>Java开发</span>
-                <span>UI设计师</span>
-                <span>Web前端</span>
-                <span>PHP</span>
-                <span>Python</span>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div
-            class="firstJobSort"
-            v-on:mouseover="changeColor('changeColorStatus4')"
-            v-on:mouseout="restoreColor('changeColorStatus4')"
-            v-bind:class="{ colorClass: changeColorStatus4 }"
-          >
-            <span class="titleSpan">贸易/零售/物流</span>
-            <Icon
-              v-if="changeColorStatus4 == false"
-              type="ios-arrow-forward"
-              size="21"
-              style="float: right; margin-top: 10px;"
-            />
-            <div
-              class="secondJobSort"
-              :class="{showDetail:changeColorStatus4,hideDetail:!changeColorStatus4}"
-            >
-              <div class="detailTitle">贸易/零售/物流</div>
-              <hr>
-              <div class="detailContent">
-                <span>Java开发</span>
-                <span>UI设计师</span>
-                <span>Web前端</span>
-                <span>PHP</span>
-                <span>Python</span>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div
-            class="firstJobSort"
-            v-on:mouseover="changeColor('changeColorStatus5')"
-            v-on:mouseout="restoreColor('changeColorStatus5')"
-            v-bind:class="{ colorClass: changeColorStatus5 }"
-          >
-            <span class="titleSpan">教育/传媒/广告</span>
-            <Icon
-              v-if="changeColorStatus5 == false"
-              type="ios-arrow-forward"
-              size="21"
-              style="float: right; margin-top: 10px;"
-            />
-            <div
-              class="secondJobSort"
-              :class="{showDetail:changeColorStatus5,hideDetail:!changeColorStatus5}"
-            >
-              <div class="detailTitle">教育/传媒/广告</div>
-              <hr>
-              <div class="detailContent">
-                <span>Java开发</span>
-                <span>UI设计师</span>
-                <span>Web前端</span>
-                <span>PHP</span>
-                <span>Python</span>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div
-            class="firstJobSort"
-            v-on:mouseover="changeColor('changeColorStatus6')"
-            v-on:mouseout="restoreColor('changeColorStatus6')"
-            v-bind:class="{ colorClass: changeColorStatus6 }"
-          >
-            <span class="titleSpan">服务业</span>
-            <Icon
-              v-if="changeColorStatus6 == false"
-              type="ios-arrow-forward"
-              size="21"
-              style="float: right; margin-top: 10px;"
-            />
-            <div
-              class="secondJobSort"
-              :class="{showDetail:changeColorStatus6,hideDetail:!changeColorStatus6}"
-            >
-              <div class="detailTitle">服务业</div>
-              <hr>
-              <div class="detailContent">
-                <span>Java开发</span>
-                <span>UI设计师</span>
-                <span>Web前端</span>
-                <span>PHP</span>
-                <span>Python</span>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div
-            class="firstJobSort"
-            v-on:mouseover="changeColor('changeColorStatus7')"
-            v-on:mouseout="restoreColor('changeColorStatus7')"
-            v-bind:class="{ colorClass: changeColorStatus7 }"
-          >
-            <span class="titleSpan">销售</span>
-            <Icon
-              v-if="changeColorStatus7 == false"
-              type="ios-arrow-forward"
-              size="21"
-              style="float: right; margin-top: 10px;"
-            />
-            <div
-              class="secondJobSort"
-              :class="{showDetail:changeColorStatus7,hideDetail:!changeColorStatus7}"
-            >
-              <div class="detailTitle">销售</div>
-              <hr>
-              <div class="detailContent">
-                <span>Java开发</span>
-                <span>UI设计师</span>
-                <span>Web前端</span>
-                <span>PHP</span>
-                <span>Python</span>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div
-            class="firstJobSort"
-            v-on:mouseover="changeColor('changeColorStatus8')"
-            v-on:mouseout="restoreColor('changeColorStatus8')"
-            v-bind:class="{ colorClass: changeColorStatus8 }"
-          >
-            <span class="titleSpan">人事/财务/行政</span>
-            <Icon
-              v-if="changeColorStatus8 == false"
-              type="ios-arrow-forward"
-              size="21"
-              style="float: right; margin-top: 10px;"
-            />
-            <div
-              class="secondJobSort"
-              :class="{showDetail:changeColorStatus8,hideDetail:!changeColorStatus8}"
-            >
-              <div class="detailTitle">人事/财务/行政</div>
-              <hr>
-              <div class="detailContent">
-                <span>Java开发</span>
-                <span>UI设计师</span>
-                <span>Web前端</span>
-                <span>PHP</span>
-                <span>Python</span>
-                <span>Android</span>
-                <span>美工</span>
-                <span>深度学习</span>
-                <span>算法工程师</span>
-                <span>Hadoop</span>
-                <span>Node.js</span>
-                <span>数据开发</span>
-                <span>数据分析师</span>
-                <span>数据架构</span>
-                <span>人工智能</span>
-                <span>区块链</span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span>电气工程师</span>
-                <span>电子工程师</span>
-                <span>PLC</span>
-                <span>测试工程师</span>
-                <span>设备工程师</span>
-                <span>硬件工程师</span>
-                <span>结构工程师</span>
-                <span>工艺工程师</span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span>产品经理</span>
-                <span>新媒体运营</span>
-                <span>运营专员</span>
-                <span>淘宝运营</span>
-                <span>天猫运营</span>
-                <span>产品助理</span>
-                <span>产品运营</span>
-                <span>淘宝客服</span>
-                <span>游戏运营</span>
-                <span>编辑</span>
-              </div>
-            </div>
-          </div>
-          <div class="secondJobSort8" style="display:none"></div>
         </li>
       </ol>
 
@@ -327,9 +56,9 @@
         <img class="findJobImg" src="../../assets/images/findjob.png">
       </div>
 
-      <!-- <div slot="footer">
-                 <Button type="error" size="large" long :loading="modal_loading" @click="del">Delete</Button>
-      </div>-->
+      <div slot="footer">
+                 <!-- <Button type="error" size="large" long :loading="modal_loading" @click="del">Delete</Button> -->
+      </div>
     </Modal>
   </div>
 </template>
@@ -342,56 +71,25 @@ export default {
   data() {
     return {
       modal1: this.modal,
-      changeColorStatus1: false,
-      changeColorStatus2: false,
-      changeColorStatus3: false,
-      changeColorStatus4: false,
-      changeColorStatus5: false,
-      changeColorStatus6: false,
-      changeColorStatus7: false,
-      changeColorStatus8: false,
+      changeColorStatus:[false,false,false,false,false,false,false,false], 
+      activeClass:-1,
+      showDetailClass:-1,
+      activeSubDetailClass:-1,
       showFindJobImg: true,
-      JobSort: [
-        {
-          firstJobName: "互联网IT",
-          secondJobList: [
-            Java开发,
-            UI设计师,
-            Web前端,
-            PHP,
-            Python,
-            Android,
-            美工,
-            深度学习,
-            算法工程师,
-            Hadoop,
-            Node.js,
-            数据开发,
-            数据分析师,
-            数据架构,
-            人工智能,
-            区块链,
-            电气工程师,
-            电子工程师,
-            PLC,
-            测试工程师,
-            设备工程师,
-            硬件工程师,
-            结构工程师,
-            工艺工程师,
-            产品经理,
-            新媒体运营,
-            运营专员,
-            淘宝运营,
-            天猫运营,
-            产品助理,
-            产品运营,
-            淘宝客服,
-            游戏运营,
-            编辑
-          ]
-        }
-      ]
+      categoryLists:[]
+      //  [ //JobSort
+        // {
+        //   categoryId:'',
+        //   categoryName: '', // firstJobName
+        //   children: [  // secondJobList
+        //       {
+        //           categoryId:'',
+        //           categoryName:'',
+        //           children:null
+        //       }
+        //   ]
+        // }
+      // ]
     };
   },
   watch: {
@@ -402,33 +100,56 @@ export default {
   },
   methods: {
     ok() {
-      this.$Message.info("Clicked ok");
       this.$emit("hideModal");
     },
     cancel() {
       this.$emit("hideModal");
-      this.$Message.info("Clicked cancel");
     },
-    changeColor(name) {
-      var fuc = "this." + name + "=true;this.showFindJobImg=false;";
+    changeColor(index) {
+      var fuc = "this.changeColorStatus[" + index + "]=true;"
+                +"this.showFindJobImg=false;"
+                +"this.activeClass="+(index)+";"
+                +"this.showDetailClass="+(index)+";"
+      console.log(fuc)
       eval(fuc);
     },
-    restoreColor(name) {
-      var fuc = "this." + name + "=false;this.showFindJobImg=true;";
+    restoreColor(index) {
+      var fuc = "this.changeColorStatus[" + index + "]=false;"
+                +"this.showFindJobImg=true;"
+                +"this.activeClass=-1;"
+                +"this.showDetailClass=-1;";
+      console.log(fuc)
       eval(fuc);
     },
-    changeDetailContentColor() {},
-    selectJob() {
-      alert("nihao");
+    changeDetailContentColor(subIndex) {
+        this.activeSubDetailClass = subIndex;
+    },
+    restoreDetailContentColor(){
+        this.activeSubDetailClass = -1;
+    },
+    selectJobSort(index,subindex) {
+      // alert("父亲在"+index+"儿子在"+subindex);
+      this.$emit("getJobSelectValue",this.categoryLists[index].categoryName+"-"+this.categoryLists[index].children[subindex].categoryName);
+      this.cancel() ;
     }
+  },
+  mounted(){
+      var _this = this;
+      this.$axios({
+          method: 'post',
+          url: '/knbolg/category/findAllCategory.do',
+        }).then( (response) => {
+          _this.categoryLists = response.data.categoryList;
+        })
+        .catch(function (error) {
+          console.log(error);
+      });
   }
 };
 </script>
 
 <style scoped>
-.ivu-modal-body {
-  padding-right: 0px !important;
-}
+
 
 .workOL {
   list-style: none;
@@ -535,5 +256,9 @@ export default {
 }
 .hideDetail {
   display: none;
+}
+
+.detailContentColorClass{
+    color: #2b85e4!important;
 }
 </style>

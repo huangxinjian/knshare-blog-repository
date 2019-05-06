@@ -19,7 +19,8 @@
                             registerUsernameErrorClass,
                             verifyCodeErrorClass,
                             phoneNumberErrorClass,
-                            phoneCodeErrorClass]" 
+                            phoneCodeErrorClass,
+                            registJobSortClass]" 
             v-model.trim="value" 
             v-on:focus="focus"  
             v-on:blur="blur">
@@ -69,6 +70,10 @@ export default {
             default:''
         },
         'registerPwdAgainErrorClass':{
+             type:String,
+            default:''
+        },
+        'registJobSortClass':{
              type:String,
             default:''
         }
@@ -151,7 +156,7 @@ export default {
         border-bottom-style: solid;
         border-bottom-width: 1px;
         border-bottom-color: #b5b5b5;
-        width: 270px;
+            width: 176px;
         font-size: 20px;
         color: #1A1A1A;
     }
@@ -166,6 +171,19 @@ export default {
         border-bottom-color: #b5b5b5;
         width: 200px;
         font-size: 20px;
+        color: #1A1A1A;
+     }
+
+     .registJobSort{
+        padding-left: 5px;
+        padding-bottom: 1px;
+        background: transparent;
+        border: none;
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        border-bottom-color: #b5b5b5;
+        width: 200px;
+        font-size: 18px;
         color: #1A1A1A;
      }
 </style>

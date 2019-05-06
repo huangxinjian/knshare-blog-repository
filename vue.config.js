@@ -7,7 +7,8 @@ module.exports = {
     // 指定子路径。比如，如果你的应用部署在
     // https://www.foobar.com/my-app/
     // 那么将这个值改为 `/my-app/`
-    baseUrl: '/',
+    // baseUrl已经不支持使用，支持使用 publicPath
+    publicPath: '/',
   
     // 将构建好的文件输出到哪里
     outputDir: 'dist',
@@ -75,11 +76,23 @@ module.exports = {
     devServer: {
       open: process.platform === 'darwin',
       host: 'localhost',
+      disableHostCheck:true,
       port: 8081,
       https: false,
       hotOnly: false,
       // 查阅 https://github.com/vuejs/vue-doc-zh-cn/vue-cli/cli-service.md#配置代理
-      proxy: null, // string | Object
+      proxy: {
+        '/knbolg': {
+          target: 'http://localhost:8080/knbolg/',//设置你调用的接口域名和端口号 别忘了加http
+          changeOrigin: true,//如果需要跨域
+          pathRewrite: {
+            '^/knbolg': ''
+                  //这里理解成用面的地址，
+                  // 后面组件中我们掉接口时直接用api代替 比如我要调
+                  // 用'http://425.0.100.100:8888/user/add'，直接写‘/api/user/add’即可
+          }
+        }
+      }, // string | Object
       before: app => {
         // `app` 是一个 express 实例
       }
